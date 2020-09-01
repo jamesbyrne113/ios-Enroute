@@ -25,11 +25,22 @@ struct FilterFlights: View {
     }
     
     var destination: Binding<MKAnnotation?> {
-        return Binding<MKAnnotation?>(
+        Binding<MKAnnotation?>(
             get: { self.draft.destination },
             set: { annotation in
                 if let airport = annotation as? Airport {
                     self.draft.destination = airport
+                }
+            }
+        )
+    }
+    
+    var origin: Binding<MKAnnotation?> {
+        Binding<MKAnnotation?>(
+            get: { self.draft.origin },
+            set: { annotation in
+                if let airport = annotation as? Airport {
+                    self.draft.origin = airport
                 }
             }
         )
@@ -56,6 +67,11 @@ struct FilterFlights: View {
                         }
                     }
                     
+                    MapView(annotations: airports.sorted(), selection: origin)
+                        .frame(minHeight: 400)
+                }
+                 
+                Section {
                     Picker("Airline", selection: $draft.airline) {
                         Text("Any").tag(Airline?.none)
                         ForEach(airlines.sorted(), id: \.self) { (airline: Airline?) in
